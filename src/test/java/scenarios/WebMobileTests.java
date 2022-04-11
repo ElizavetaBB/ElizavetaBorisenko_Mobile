@@ -1,9 +1,7 @@
 package scenarios;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.List;
-import java.util.Locale;
+import org.assertj.core.api.SoftAssertions;
 import org.testng.annotations.Test;
 import pageobjects.web.GoogleStartPageObject;
 import pageobjects.web.SearchResultPageObject;
@@ -24,9 +22,9 @@ public class WebMobileTests extends BaseTest {
         SearchResultPageObject searchResultPageObject = googleStartPageObject.search(WebProperties.QUERY);
         List<String> searchResults = searchResultPageObject.getSearchResultsTitles();
 
-        assertThat(searchResults.stream()
-                .filter(x -> x.toLowerCase(Locale.ROOT).contains(WebProperties.KEYWORD))
-                .count()).isGreaterThan(WebProperties.LINKS_NUMBER);
+        SoftAssertions softAssertions = new SoftAssertions();
+        searchResults.forEach(result -> softAssertions.assertThat(result).containsIgnoringCase(WebProperties.KEYWORD));
+        softAssertions.assertAll();
 
         System.out.println("Android web test done");
     }

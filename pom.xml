@@ -10,6 +10,7 @@
 
     <properties>
         <testng.version>7.5</testng.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java-client.version>7.6.0</java-client.version>
         <assertj-core.version>3.22.0</assertj-core.version>
         <testng.config.path>./src/test/resources/testng</testng.config.path>
