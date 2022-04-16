@@ -14,6 +14,8 @@
         <java-client.version>7.6.0</java-client.version>
         <assertj-core.version>3.22.0</assertj-core.version>
         <testng.config.path>./src/test/resources/testng</testng.config.path>
+        <testng.cloud.config.path>${testng.config.path}/cloud</testng.cloud.config.path>
+        <testng.sauceLabs.config.path>${testng.config.path}/sauceLabs</testng.sauceLabs.config.path>
     </properties>
 
     <dependencies>
@@ -45,7 +47,9 @@
                         <suiteXmlFile>${suite.file}</suiteXmlFile>
                     </suiteXmlFiles>
                     <systemPropertyVariables>
-                        <ts.appium>http://localhost:4723/wd/hub</ts.appium>
+                        <!--<ts.appium>http://localhost:4723/wd/hub</ts.appium>-->
+                        <ts.appium.epam>https://%s:%s@mobilecloud.epam.com/wd/hub</ts.appium.epam>
+                        <ts.appium.sauceLabs>https://%s:%s@ondemand.eu-central-1.saucelabs.com:443/wd/hub</ts.appium.sauceLabs>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -74,10 +78,90 @@
         <profile>
             <id>web</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
                 <suite.file>${testng.config.path}/webTNG.xml</suite.file>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>cloudWebAndroid</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <suite.file>${testng.cloud.config.path}/cloudWebAndroidTNG.xml</suite.file>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>cloudNativeAndroid</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <suite.file>${testng.cloud.config.path}/cloudNativeAndroidTNG.xml</suite.file>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>cloudWebiOS</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <suite.file>${testng.cloud.config.path}/cloudWebiOSTNG.xml</suite.file>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>cloudNativeiOS</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <suite.file>${testng.cloud.config.path}/cloudNativeiOSTNG.xml</suite.file>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>sauceLabsWebAndroid</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <suite.file>${testng.sauceLabs.config.path}/sauceLabsWebAndroidTNG.xml</suite.file>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>sauceLabsNativeAndroid</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <suite.file>${testng.sauceLabs.config.path}/sauceLabsNativeAndroidTNG.xml</suite.file>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>sauceLabsWebiOS</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <suite.file>${testng.sauceLabs.config.path}/sauceLabsWebiOSTNG.xml</suite.file>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>sauceLabsNativeiOS</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <suite.file>${testng.sauceLabs.config.path}/sauceLabsNativeiOSTNG.xml</suite.file>
             </properties>
         </profile>
     </profiles>
