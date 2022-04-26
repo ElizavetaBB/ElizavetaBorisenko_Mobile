@@ -10,7 +10,7 @@ import org.openqa.selenium.support.FindBy;
 public class SearchResultPageObject extends WebPageObject {
 
     @FindAll({
-        @FindBy(css = "#rso div.xpd a div > span:last-child"),
+        @FindBy(css = "div.BkwXh div"),
         @FindBy(css = "#rso div.xpd div.oewGkc div")
     })
     private List<WebElement> searchResultsTitles;

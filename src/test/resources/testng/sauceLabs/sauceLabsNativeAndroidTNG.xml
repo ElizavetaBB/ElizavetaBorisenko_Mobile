@@ -1,0 +1,19 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Android Native Sauce Labs mobile testing Suite">
+    <parameter name="cloudName" value="Sauce Labs"/>
+    <parameter name="appType" value="native"/>
+    <parameter name="deviceName" value="Samsung_Galaxy_S9_free"/>
+    <parameter name="platformName" value="Android"/>
+    <parameter name="platformVersion" value="9.0"/>
+    <parameter name="app" value="EPAMTestApp.apk"/>
+    <test name="Android Sauce Labs Native tests">
+        <groups>
+            <run>
+                <include name="native"/>
+            </run>
+        </groups>
+        <packages>
+            <package name="scenarios"/>
+        </packages>
+    </test>
+</suite>

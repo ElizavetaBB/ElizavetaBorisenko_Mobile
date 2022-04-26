@@ -13,7 +13,7 @@ public class NativeMobileTests extends BaseTest {
 
     @Test(groups = {"native"}, description = "Test to register, login and check BudgetActivityPage")
     public void simpleNativeTest() {
-        System.out.println("Android native test started");
+        System.out.println("Native test started");
 
         LoginPageObject loginPageObject = (LoginPageObject) getPageObject().getPageObjectInstance();
 
@@ -25,9 +25,8 @@ public class NativeMobileTests extends BaseTest {
                 .openBudgetActivityPage();
 
         String pageTitle = budgetActivityPageObject.getTitle();
-        assertThat(pageTitle).isEqualTo(NativeProperties.BUDGET_PAGE_TITLE);
-
-        System.out.println("Android native test done");
+        assertThat(pageTitle).contains(NativeProperties.BUDGET_PAGE_TITLE);
+        System.out.println("Native test done");
     }
 
 }
