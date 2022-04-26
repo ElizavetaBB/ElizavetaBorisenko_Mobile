@@ -15,7 +15,6 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import pageobjects.PageObject;
-import properties.AuthorizationProperties;
 
 public class BaseTest implements IDriver {
 
@@ -33,24 +32,21 @@ public class BaseTest implements IDriver {
 
     @Parameters({"cloudName", "platformName", "appType", "deviceName",
         "udid", "browserName", "app", "appPackage", "appActivity",
-        "bundleId", "platformVersion", "appName"})
+        "bundleId", "platformVersion"})
     @BeforeSuite(alwaysRun = true)
     public void setUp(String cloudName, String platformName, String appType,
                       @Optional("") String deviceName,
                       @Optional("") String udid,
-                      @Optional("") String browserName,
+                      @Optional("browser") String browserName,
                       @Optional("app") String app,
                       @Optional("") String appPackage,
                       @Optional("") String appActivity,
                       @Optional("") String bundleId,
-                      @Optional("") String platformVersion,
-                      @Optional("app") String appName) throws Exception {
+                      @Optional("") String platformVersion) throws Exception {
+        System.out.println("Before: cloud name - " + cloudName);
         System.out.println("Before: app type - " + appType);
-        if (cloudName.contains("EPAM")) {
-            setAppiumDriver(platformName, deviceName, udid, browserName, app, appPackage, appActivity, bundleId);
-        } else {
-            setAppiumDriver(platformName, deviceName, platformVersion, browserName, appName);
-        }
+        setAppiumDriver(platformName, deviceName, udid, platformVersion,
+                browserName, app, appPackage, appActivity, bundleId);
         setPageObject(appType, appiumDriver);
         System.setProperty("cloud", cloudName);
         System.setProperty("platformName", platformName);
@@ -62,68 +58,56 @@ public class BaseTest implements IDriver {
         appiumDriver.closeApp();
     }
 
-    private void setAppiumDriver(String platformName, String deviceName, String udid, String browserName,
-                                 String app, String appPackage, String appActivity, String bundleId) {
+    private void setAppiumDriver(String platformName, String deviceName, String udid,
+                                 String platformVersion, String browserName, String app,
+                                 String appPackage, String appActivity, String bundleId) {
+        String cloudName = System.getProperty("ts.appium");
+        String cloudParameter = cloudName.contains("epam") ? "" : "appium:";
         DesiredCapabilities capabilities = new DesiredCapabilities();
 
-        // mandatory Android capabilities
         capabilities.setCapability("platformName", platformName);
-        capabilities.setCapability("deviceName", deviceName);
-        capabilities.setCapability("udid", udid);
+        capabilities.setCapability(cloudParameter + "deviceName", deviceName);
 
-        if (app.endsWith(".apk")) {
-            capabilities.setCapability("app", (new File(app)).getAbsolutePath());
+        if (!browserName.equals("browser")) {
+            capabilities.setCapability("browserName", browserName);
         }
 
-        // web capabilities
-        capabilities.setCapability("browserName", browserName);
-        capabilities.setCapability("chromedriverDisableBuildCheck", "true");
+        if (cloudName.contains("epam")) {
+            capabilities.setCapability("udid", udid);
 
-        // android app capabilities
-        capabilities.setCapability("appPackage", appPackage);
-        capabilities.setCapability("appActivity", appActivity);
+            if (app.endsWith(".apk")) {
+                capabilities.setCapability("app", (new File(app)).getAbsolutePath());
+            }
 
-        // ios app capabilities
-        capabilities.setCapability("bundleId", bundleId);
+            // web capabilities
+            capabilities.setCapability("chromedriverDisableBuildCheck", "true");
 
-        // EPAM driver
-        try {
-            String key = URLEncoder.encode(AuthorizationProperties.TOKEN_EPAM, StandardCharsets.UTF_8.name());
-            appiumDriver = new AppiumDriver(new URL(
-                    String.format(System.getProperty("ts.appium.epam"), AuthorizationProperties.PROJECT_NAME_EPAM, key)
-                ), capabilities);
-        } catch (MalformedURLException | UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+            // android app capabilities
+            capabilities.setCapability("appPackage", appPackage);
+            capabilities.setCapability("appActivity", appActivity);
 
-        // Timeouts tuning
-        appiumDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-    }
-
-    private void setAppiumDriver(String platformName, String deviceName, String platformVersion,
-                                 String browserName, String appName) {
-        MutableCapabilities caps = new MutableCapabilities();
-        caps.setCapability("platformName", platformName);
-        caps.setCapability("appium:deviceName", deviceName);
-        caps.setCapability("appium:platformVersion", platformVersion);
-
-        if (appName.endsWith(".ipa") || appName.endsWith(".apk")) {
-            caps.setCapability("appium:app", "storage:filename=" + appName);
+            // ios app capabilities
+            capabilities.setCapability("bundleId", bundleId);
         } else {
-            caps.setCapability("browserName", browserName);
+            capabilities.setCapability("appium:platformVersion", platformVersion);
+
+            if (app.endsWith(".ipa") || app.endsWith(".apk")) {
+                capabilities.setCapability("appium:app", "storage:filename=" + app);
+            }
+
+            MutableCapabilities sauceOptions = new MutableCapabilities();
+            sauceOptions.setCapability("appiumVersion", "1.22.0");
+            capabilities.setCapability("sauce:options", sauceOptions);
         }
 
-        MutableCapabilities sauceOptions = new MutableCapabilities();
-        sauceOptions.setCapability("appiumVersion", "1.22.0");
-        caps.setCapability("sauce:options", sauceOptions);
-
-        // Sauce Labs driver
         try {
+            String key = cloudName.contains("epam")
+                    ? URLEncoder.encode(System.getProperty("token"), StandardCharsets.UTF_8.name())
+                    : System.getProperty("token");
             appiumDriver = new AppiumDriver(new URL(
-                    String.format(System.getProperty("ts.appium.sauceLabs"),
-                            AuthorizationProperties.USERNAME_SAUCE_LABS, AuthorizationProperties.TOKEN_SAUCE_LABS)
-            ), caps);
-        } catch (MalformedURLException e) {
+                    String.format(System.getProperty("ts.appium"), System.getProperty("username"), key)
+            ), capabilities);
+        } catch (MalformedURLException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 

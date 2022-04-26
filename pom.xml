@@ -48,8 +48,10 @@
                     </suiteXmlFiles>
                     <systemPropertyVariables>
                         <!--<ts.appium>http://localhost:4723/wd/hub</ts.appium>-->
-                        <ts.appium.epam>https://%s:%s@mobilecloud.epam.com/wd/hub</ts.appium.epam>
-                        <ts.appium.sauceLabs>https://%s:%s@ondemand.eu-central-1.saucelabs.com:443/wd/hub</ts.appium.sauceLabs>
+                        <!--<ts.appium.epam>https://%s:%s@mobilecloud.epam.com/wd/hub</ts.appium.epam>
+                        <ts.appium.sauceLabs>https://%s:%s@ondemand.eu-central-1.saucelabs.com:443/wd/hub</ts.appium.sauceLabs>-->
+                        <!--<ts.appium>https://%s:%s@mobilecloud.epam.com/wd/hub</ts.appium>-->
+                        <ts.appium>https://%s:%s@ondemand.eu-central-1.saucelabs.com:443/wd/hub</ts.appium>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
